@@ -6,7 +6,6 @@ import org.springframework.amqp.core.DirectExchange;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -23,20 +22,21 @@ public class AccountProducer {
     @Value("${rabbitmq.binding.account.update.routing.key}")
     private String accountUpdateRoutingKey;
 
-    public int createAccount(AccountDto accountDto){
-        return template.convertSendAndReceiveAsType(
+    public Integer createAccount(AccountDto accountDto){
+        Object temp = template.convertSendAndReceive(
                 directExchange.getName(),
                 accountRoutingKey,
-                accountDto,
-                new ParameterizedTypeReference<>() {});
+                accountDto);
+        return (Integer) temp;
     }
 
-    public double updateAccountBalance(AccountTransactionDto accountTransactionDto){
-        return template.convertSendAndReceiveAsType(
+    public Double updateAccountBalance(AccountTransactionDto accountTransactionDto){
+        Object temp =  template.convertSendAndReceive(
                 directExchange.getName(),
                 accountUpdateRoutingKey,
-                accountTransactionDto,
-                new ParameterizedTypeReference<>() {});
+                accountTransactionDto);
+
+        return (Double) temp;
     }
 
 }
