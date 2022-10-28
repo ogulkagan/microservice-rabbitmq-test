@@ -20,11 +20,10 @@ services:
 
   rabbitmq:
     container_name: rabbitmq
-    image: rabbitmq:3.11.2-alpine
+    image: rabbitmq:3-management
     ports:
-      - 5672:5672
-    networks:
-      - resolute
+      - "5672:5672"
+      - "15672:15672"
   webservice:
     build: ./webservice
     container_name: webservice
@@ -35,8 +34,6 @@ services:
     depends_on:
       - rabbitmq
       - db
-    networks:
-      - resolute
 
   account:
     build: ./account
@@ -49,8 +46,6 @@ services:
       - rabbitmq
       - db
       - webservice
-    networks:
-      - resolute
 
   transaction:
     build: ./transaction
@@ -64,13 +59,6 @@ services:
       - rabbitmq
       - db
       - webservice
-    networks:
-      - resolute
 volumes:
       db:
         driver: local
-
-networks:
-  resolute:
-    external:
-      name: resolute
